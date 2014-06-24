@@ -2,7 +2,7 @@
  * Addresses are ints - 0000-7FFF (32767) Data is bytes (8 bits x 32767 = 256K)
  * Functions for R/W of single byte or a page of bytes. Max page is 28 bytes.
  */
- 
+
 // from bHogan user post at http://forum.arduino.cc/index.php/topic,18501.0.html
 
 #include <Wire.h>
@@ -18,7 +18,7 @@ void setup(){
   Wire.begin();                        // join I2C bus (address optional for master)
   Serial.begin(9600);
 
-// TESTS FOR EACH FUNCTION BEGIN HERE
+  // TESTS FOR EACH FUNCTION BEGIN HERE
   Serial.println("Writing Test:");
   for (int i=0; i<20; i++){            // loop for first 20 slots
     i2c_eeprom_write_byte(EEPROM_ADDR,i,i+65);   // write address + 65 A or 97 a
@@ -41,10 +41,10 @@ void setup(){
   }
   Serial.println("");
   for (int i=0; i<16; i++) {
-  PageData[i] = i+33;
+    PageData[i] = i+33;
   }  // fill up array for next test with numbers starting at 33
 
-  Serial.println("Writing Page Test:");
+    Serial.println("Writing Page Test: 16 numbers from 33-48");
   i2c_eeprom_write_page(EEPROM_ADDR, 100, PageData, 16 ); // 28 bytes/page is max whole page is written at once here
   //could change this to 16 bytes in my code, he arbitrarily chose 100 as the memory address here?
 
@@ -64,7 +64,7 @@ void loop(){
 // Address is a page address, 6-bit (63). More and end will wrap around
 // But data can be maximum of 28 bytes, because the Wire library has a buffer of 32 bytes
 void i2c_eeprom_write_page( int deviceaddress, unsigned int eeaddresspage, byte* data, byte length ) {
-    //void eeprom_read_block (void * pointer_ram , const void * pointer_eeprom , size_t n)
+  //void eeprom_read_block (void * pointer_ram , const void * pointer_eeprom , size_t n)
   Wire.beginTransmission(deviceaddress);
   Wire.write((int)(eeaddresspage >> 8)); // Address High Byte
   Wire.write((int)(eeaddresspage & 0xFF)); // Address Low Byte
@@ -106,3 +106,4 @@ void i2c_eeprom_write_byte( int deviceaddress, unsigned int eeaddress, byte data
   Wire.write(rdata);
   Wire.endTransmission();
 }
+
