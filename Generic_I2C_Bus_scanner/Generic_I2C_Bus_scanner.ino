@@ -9,19 +9,23 @@
  */
 
 #include "Wire.h"
+#define RTCPOWER_PIN 7
 
 byte start_address = 0;
 byte end_address = 127;
 
 void setup()
-{
+{   
+  pinMode(RTCPOWER_PIN, HIGH);   //some of my units use this pin for powering the RTC, need to set high for I2c coms.
   byte rc;
   Wire.begin();
 
   Serial.begin(9600);
   Serial.println("\nI2C Scanner");
+  Serial.flush();
 
   Serial.print("Scanning I2C bus from ");
+  Serial.flush();
   Serial.print(start_address,DEC);  
   Serial.print(" to ");  
   Serial.print(end_address,DEC);
@@ -47,6 +51,7 @@ void setup()
   }
 
   Serial.println("\n-------------------------------\nPossible devices:");
+  Serial.flush();
 
   for( byte addr  = start_address;
             addr <= end_address;
@@ -91,11 +96,17 @@ void setup()
         Serial.println("BMA250"); 
         break;
       case 0x76: 
-        Serial.println("MS5803-02BA - Pin CSB high "); 
+        Serial.println("MS5803-02BA - Pin CSB high  OR MS561101BA CSB_HIGH "); 
         break;
       case 0x77: 
         Serial.println("MS5803-02BA - Pin CSB low OR BMP085"); 
         break;
+        case 0x53: 
+        Serial.println("ADXL345"); 
+        break;
+        case 0x38: 
+        Serial.println("BMA020 2g accelerometer"); 
+        break;  //  http://www.farnell.com/datasheets/1525403.pdf
       default: 
         Serial.println("Unknown"); 
         break;

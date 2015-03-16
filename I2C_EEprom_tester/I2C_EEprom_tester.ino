@@ -6,7 +6,8 @@
 // from bHogan user post at http://forum.arduino.cc/index.php/topic,18501.0.html
 
 #include <Wire.h>
-#define EEPROM_ADDR 0x57           // I2C Buss address of AT24C32 32K EEPROM
+#define EEPROM_ADDR 0x57           // I2C Buss address of AT24C32 32K EEPROM with pins pulled high
+// EEprom address is 0x50 with pins pulled low
 #define startWriteAddressEEPROM 0  // you can just start this from 0
 #define pageSize 32                // for the AT24c32 - check datasheet for other chips
 
