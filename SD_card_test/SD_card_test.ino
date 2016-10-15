@@ -1,3 +1,5 @@
+
+
 /*
   SD card test 
    
@@ -21,6 +23,9 @@
  */
  // include the SD library:
 #include <SD.h>
+#include <SPI.h>
+//#include <SdFat.h>
+//SdFat SD;
 
 // set up variables using the SD utility library functions:
 Sd2Card card;
@@ -31,7 +36,8 @@ SdFile root;
 // Arduino Ethernet shield: pin 4
 // Adafruit SD shields and modules: pin 10
 // Sparkfun SD shield: pin 8
-const int chipSelect = 10;    
+const int chipSelect = 10;  // Rockets
+//const int chipSelect = 1;  // MegaMote
 
 void setup()
 {

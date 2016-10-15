@@ -9,8 +9,8 @@
  */
 
 #include "Wire.h"
-#define RTCPOWER_PIN 7
-
+//#define RTCPOWER_PIN 14  //motinos
+#define RTCPOWER_PIN 7  //rockets
 byte start_address = 0;
 byte end_address = 127;
 
@@ -68,11 +68,14 @@ void setup()
       case 0x57: 
         Serial.println("AT24C32 - ADR pins high"); 
         break;
+      case 0x19: 
+        Serial.println("LM303 Accelerometer"); 
+        break;
       case 0x68: 
         Serial.println("DS3231 / DS1307, also ITG3200 gyro"); 
         break;
       case 0x1E: 
-        Serial.println("HMC5883L"); 
+        Serial.println("HMC5883L or LM303DLHC compass"); 
         break;
       case 0x40: 
         Serial.println("BMA180"); 

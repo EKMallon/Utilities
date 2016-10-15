@@ -6,7 +6,8 @@
 // from bHogan user post at http://forum.arduino.cc/index.php/topic,18501.0.html
 
 #include <Wire.h>
-#define EEPROM_ADDR 0x57           // I2C Buss address of AT24C32 32K EEPROM with pins pulled high
+#define EEPROM_ADDR 0x50          
+//  0x57  I2C Buss address of AT24C32 32K EEPROM with pins pulled high
 // EEprom address is 0x50 with pins pulled low
 #define startWriteAddressEEPROM 0  // you can just start this from 0
 #define pageSize 32                // for the AT24c32 - check datasheet for other chips
@@ -17,6 +18,24 @@ int nextPageStartAddress;  //nextPageStartAddress = currentPageStartAddress +/- 
 
 void setup(){
   Wire.begin();                        // join I2C bus (address optional for master)
+  
+  //Changing I2C speed  http://www.gammon.com.au/forum/?id=10896
+  //also http://electronics.stackexchange.com/questions/29457/how-to-make-arduino-do-high-speed-i2c
+  //if (EEPROM_ADDRESS==0x50){  
+  TWBR = 2;//for 400 kHz @ 8MHz CPU speed ONLY // AT24c256 ok @ 400kHz http://www.atmel.com/Images/doc0670.pdf  
+  // see http://www.avrfreaks.net/forum/can-8mhz-clock-run-400khz-twi?skey=TWBR%208mhz 8mhz arduinos might not be capable of 400hz
+  //TWBR = 12; // 200kHz mode @ 8MHz or 400kHz mode @ 16MHz CPU 
+  //TWBR = 32;  // 100 kHz (default) @ 8MHz only 
+  //}
+  // AT24c256 ok to 400kHz http://www.atmel.com/Images/doc0670.pdf  
+  // But the AT24c32 on the RTC board rated fro 100kHz  http://www.atmel.com/images/doc0336.pdf  
+  // multispeed I2C scanner https://github.com/RobTillaart/Arduino/tree/master/sketches/MultiSpeedI2CScanner 
+  // TWBR selects the division factor for the bit rate generator. The bit rate generator is a frequency divider which generates the SCL clock frequency in the Master modes.  
+  // TWBR = ((F_CPU / TWI_FREQ) - 16) / 2;
+  // SCL frequency = CPU_FREQUENCY / (16 + 2(TWBR) * (PrescalerValue)) //Prescalar=TWSR  // http://www.gammon.com.au/i2c    
+  // for a CPU speed of 16000000 that will give:  TWBR =  ((16000000 / 100000) - 16) / 2 = 72 
+  
+  
   Serial.begin(9600);
 
   // TESTS FOR EACH FUNCTION BEGIN HERE
