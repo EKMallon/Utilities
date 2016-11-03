@@ -81,7 +81,8 @@ void loop(){
 }
 
 // The functions listed below are not part of the eeprom tester, but are VERY handy to know about.
-// I've been using them for so long now, I no longer remember where I found them originally
+// I use them to buffer data in the I2C eeproms from Atmel like the AT24C32 that comes on many DS3231 RTC boards
+// It's worth noting that writing a byte, and writing a page to these eeproms takes the same amount of power
 
 // EEprom PAGE read & write functions
 //===================================
