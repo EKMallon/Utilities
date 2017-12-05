@@ -1,1 +1,12 @@
-Nokia 5110 readme
+This is Julian Ilett's wonderful Nokia 5110 driver, explained in his tutorial videos at 
+https://www.youtube.com/playlist?list=PLjzGSu1yGFjXWp5F4BPJg4ZJFbJcWeRzk
+
+I've added a small tweak to load the font array into to PROGMEM, 
+and that required changing only one line in the function: void LcdWriteCharacter(char character) 
+
+from:
+LcdWriteData(ASCII[character - 0x20][i]);
+to:
+LcdWriteData(pgm_read_byte(&ASCII[character - 0x20][i]));
+
+This means that no dynamic variable memory gets used to run the display.
