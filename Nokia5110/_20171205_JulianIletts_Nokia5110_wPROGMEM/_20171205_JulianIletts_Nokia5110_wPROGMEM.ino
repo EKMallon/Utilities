@@ -1,15 +1,68 @@
-//PCD8544 controller  datasheet
+//PCD8544 controller  datasheet   84x48 pixel black and white LCDs
 //https://www.sparkfun.com/datasheets/LCD/Monochrome/Nokia5110.pdf
-
+//26x28 pixels are a nice size for graphics
+//http://ianlangelectronic.webeden.co.uk/lcd-module-0/4569058582
 //Also see: Sparkfuns Graphic LCD Hookup Guide for graphic bitmaps
 //https://learn.sparkfun.com/tutorials/graphic-lcd-hookup-guide?_ga=2.193476516.863067337.1512481661-1112697269.1408048121 
 
-#define RST 5
-#define CE  6
-#define DC  7
-#define DIN  8
-#define CLK  9
+#define RST 5          //6.1.12 RES: LOW followed by HIGH = reset
+#define ChipEnable 6   //6.1.10 SCE: chip enable active LOW //could just connect this to ground if you have dedicated wires
+#define DCmodeSelect 7 //6.1.9 D/C: mode select // If D/C LOW, the current byte is interpreted as command byte  If D/C = HIGH, the following bytes are stored in the display data RAM. 
+#define DataIN 8       //6.1.7 SDIN: serial data line
+#define SerialCLK 9    //6.1.8 SCLK: serial clock line  0.0 to 4.0 Mbits/s max, -line rests low, so could be used for light control
 
+#define POWERpin  17  //this version powers the 5110 screen from pin A3
+/*
+Using analogue pins for digital I/O is just the same as using digital ones.
+A0 is referred to as Pin 14
+A1 is referred to as Pin 15
+A2 is referred to as Pin 16
+A3 is referred to as Pin 17
+A4 is referred to as Pin 18
+A5 is referred to as Pin 19
+ */
+
+//To make these fonts: LCD creator / LCD assistant http://www.instructables.com/id/Nokia-5110-graphics-tutorial/
+/*
+ * start with a bitmap that is 11 pixels wide, by 16 pixels high
+ * for this 'split letters' method, use the vertical & little endian encoding in LCD assistant
+ * the put the first 11 bytes in the Big11x16numberTops & the second 11 bytes for each number
+ * in the Big11x16numberBottoms array
+*/
+
+const byte Big11x16numberTops[][11] PROGMEM = {
+  0x00,0x00,0x80,0x80,0x80,0x80,0x80,0x80,0x80,0x00,0x00, // Code for char -
+  0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00, // Code for char .
+  0x00,0x00,0x00,0x00,0x00,0xC0,0xE0,0x78,0x1C,0x0F,0x03, // Code for char /
+  0xFE,0xFF,0x03,0x03,0x03,0xC3,0x33,0x0B,0x07,0xFF,0xFE, // Code for char 0
+  0x00,0x03,0x03,0x03,0x03,0xFF,0xFF,0x00,0x00,0x00,0x00, // Code for char 1
+  0x03,0x83,0x83,0x83,0x83,0x83,0x83,0x83,0x83,0xFF,0xFE, // Code for char 2
+  0x00,0x03,0x03,0x83,0x83,0x83,0x83,0x83,0x83,0xFF,0xFE, // Code for char 3
+  0x00,0xFF,0xFF,0x00,0x00,0x00,0x00,0x00,0xFC,0xFC,0x00, // Code for char 4
+  0x00,0x00,0xFF,0xFF,0x83,0x83,0x83,0x83,0x83,0x83,0x03, // Code for char 5
+  0xFF,0xFF,0x03,0x03,0x03,0x03,0x03,0x03,0x07,0x06,0x00, // Code for char 6
+  0x07,0x07,0x03,0x03,0x03,0x03,0x83,0x83,0xC3,0x7F,0x7F, // Code for char 7
+  0x00,0x80,0xFF,0xFF,0x83,0x83,0x83,0xFF,0xFF,0x80,0x00, // Code for char 8
+  0xFF,0xFF,0xC3,0xC3,0xC3,0xC3,0xC3,0xC3,0xC3,0xFF,0xFF, // Code for char 9
+};
+
+const byte Big11x16numberBottoms[][11] PROGMEM = {
+  0x00,0x00,0x01,0x01,0x01,0x01,0x01,0x01,0x01,0x00,0x00, // Code for char -
+  0x00,0x00,0x00,0x00,0x0E,0x0E,0x0E,0x0E,0x00,0x00,0x00, // Code for char .
+  0x00,0x60,0x78,0x3C,0x0F,0x03,0x01,0x00,0x00,0x00,0x00, // Code for char /
+  0x3F,0x7F,0x70,0x6C,0x63,0x60,0x60,0x60,0x60,0x7F,0x3F, // Code for char 0
+  0x00,0x60,0x60,0x60,0x60,0x7F,0x7F,0x60,0x60,0x60,0x60, // Code for char 1
+  0x7F,0x7F,0x61,0x61,0x61,0x61,0x61,0x61,0x61,0x61,0x60, // Code for char 2
+  0x00,0x60,0x60,0x61,0x61,0x61,0x61,0x61,0x61,0x7F,0x3F, // Code for char 3
+  0x00,0x03,0x03,0x03,0x03,0x03,0x03,0x03,0x7F,0x7F,0x03, // Code for char 4
+  0x00,0x38,0x79,0x61,0x61,0x61,0x61,0x61,0x61,0x7F,0x3F, // Code for char 5
+  0x7F,0x7F,0x63,0x63,0x63,0x63,0x63,0x63,0x63,0x7F,0x7F, // Code for char 6
+  0x00,0x00,0x00,0x00,0x00,0x7F,0x7F,0x01,0x00,0x00,0x00, // Code for char 7
+  0x3F,0x7F,0x61,0x61,0x61,0x61,0x61,0x61,0x61,0x7F,0x3F, // Code for char 8
+  0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x7F,0x7F, // Code for char 9
+};
+
+//the regular sized font set:
 const byte ASCII[][5] PROGMEM =
 {
  {0x00, 0x00, 0x00, 0x00, 0x00} // 20  
@@ -110,6 +163,33 @@ const byte ASCII[][5] PROGMEM =
 ,{0x78, 0x46, 0x41, 0x46, 0x78} // 7f →
 };
 
+void LcdWriteBigStringTops(char *characters)
+{while(*characters) LcdWriteBigCharacterTops(*characters++);}
+
+void LcdWriteBigStringBottoms(char *characters)
+{while(*characters) LcdWriteBigCharacterBottoms(*characters++);}
+
+void LcdWriteBigCharacterTops(char character)
+{
+  for(int i=0; i<11; i++){
+    if((character - 0x2d)>=0){
+  LcdWriteData(pgm_read_byte(&Big11x16numberTops[character - 0x2d][i]));
+    }
+  }
+  LcdWriteData(0x00);//one row of spacer pixels inserted between characters
+}
+
+void LcdWriteBigCharacterBottoms(char character)
+{ 
+  for(int i=0; i<11; i++){
+    if((character - 0x2d)>=0){
+  LcdWriteData(pgm_read_byte(&Big11x16numberBottoms[character - 0x2d][i]));
+    }
+  }
+  LcdWriteData(0x00);//one row of spacer pixels inserted between characters
+}
+
+
 void LcdWriteString(char *characters)
 {
   while(*characters) LcdWriteCharacter(*characters++);
@@ -117,19 +197,18 @@ void LcdWriteString(char *characters)
 
 void LcdWriteCharacter(char character)
 {
-  byte n;
   for(int i=0; i<5; i++){
   LcdWriteData(pgm_read_byte(&ASCII[character - 0x20][i]));
   }
-  LcdWriteData(0x00);
+  LcdWriteData(0x00);//one row of spacer pixels inserted between characters
 }
 
 void LcdWriteData(byte dat)
 {
-  digitalWrite(DC, HIGH); //DC pin is low for commands
-  digitalWrite(CE, LOW);
-  shiftOut(DIN, CLK, MSBFIRST, dat); //transmit serial data
-  digitalWrite(CE, HIGH);
+  digitalWrite(DCmodeSelect, HIGH); //DCmodeSelect pin is low for commands
+  digitalWrite(ChipEnable, LOW);
+  shiftOut(DataIN, SerialCLK, MSBFIRST, dat); //transmit serial data
+  digitalWrite(ChipEnable, HIGH);
 }
 
 void LcdXY(int x, int y)
@@ -140,22 +219,16 @@ void LcdXY(int x, int y)
 
 void LcdWriteCmd(byte cmd)
 {
-  digitalWrite(DC, LOW); //DC pin is low for commands
-  digitalWrite(CE, LOW);
-  shiftOut(DIN, CLK, MSBFIRST, cmd); //transmit serial data
-  digitalWrite(CE, HIGH);
+  digitalWrite(DCmodeSelect, LOW); //DCmodeSelect pin is low for commands
+  digitalWrite(ChipEnable, LOW);
+  shiftOut(DataIN, SerialCLK, MSBFIRST, cmd); //transmit serial data
+  digitalWrite(ChipEnable, HIGH);
 }
 
-void setup()
+void LcdInit(void)
 {
-  pinMode(RST, OUTPUT);
-  pinMode(CE, OUTPUT);
-  pinMode(DC, OUTPUT);
-  pinMode(DIN, OUTPUT);
-  pinMode(CLK, OUTPUT);
   digitalWrite(RST, LOW);
   digitalWrite(RST, HIGH);
-  
   LcdWriteCmd(0x21);  // LCD extended commands
   LcdWriteCmd(0xB8);  // set LCD Vop (contrast) //you may need to tweak this 
   LcdWriteCmd(0x04);  // set temp coefficent
@@ -164,6 +237,19 @@ void setup()
   LcdWriteCmd(0x0C);  // LCD normal video
   
   for(int i=0; i<504; i++) LcdWriteData(0x00); // clear LCD
+}
+
+void setup()
+{
+  pinMode(POWERpin, OUTPUT);
+  digitalWrite(POWERpin, HIGH);
+  pinMode(RST, OUTPUT);
+  pinMode(ChipEnable, OUTPUT);
+  pinMode(DCmodeSelect, OUTPUT);
+  pinMode(DataIN, OUTPUT);
+  pinMode(SerialCLK, OUTPUT);
+  
+  LcdInit();
 
   LcdXY(0,2);
   LcdWriteString("VOLTAGE:"); 
@@ -173,10 +259,30 @@ char string[8];
 
 void loop()
 {
+  digitalWrite(POWERpin, HIGH); //I've replaced the LED limiters with 3k3 resistors
+  //so the whole 5110 display can be powered by a single digital pin @~1mA
+  LcdInit();
+  LcdXY(0,0); //position the cursor
+  LcdWriteString("VOLTAGE:"); 
+  
   //put the output from a voltage divider on AO
   float voltage = analogRead(A0) * 3.3 / 1024; // I'm using a 3.3v promini
-  LcdXY (50,2);
-  LcdWriteString(dtostrf(voltage,5,2,string));
+  LcdXY (0,1);
+  LcdWriteString(dtostrf(voltage,5,2,string)); //this is the numbers in the regular font
+  
+  //now print the output with double sized numbers
+  //this takes two passes - the first prints the top of the numbers
+  //and the second pass prints the bottom of each of the numbers
+  // note only 7 digits fit across the display, and this is a numbers only font
+  LcdXY (0,2);  //top half of the double-size numbers
+  LcdWriteBigStringTops(dtostrf(voltage,5,2,string));
+  LcdXY (0,3);  //bottom half of the numbers
+  LcdWriteBigStringBottoms(dtostrf(voltage,5,2,string));
+
+  delay(5000);
+  digitalWrite(POWERpin, LOW);
+  delay(5000); 
+  
 }
 
 
