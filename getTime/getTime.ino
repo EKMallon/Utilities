@@ -72,6 +72,8 @@ void loop(void)
 // ============================================================================================================
 // RTC functions
 // ============================================================================================================
+// these functions are from a fork of JeeLab's fantastic real time clock library for Arduino
+// released into the public domain by Jeelabs https://github.com/jcw/rtclib & Ladyada & Eric Ayars, etc.
 
 void RTC_DS3231_getTime()
 {
@@ -120,10 +122,7 @@ static long time2long(uint16_t days, uint8_t h, uint8_t m, uint8_t s) {
   return ((days * 24L + h) * 60 + m) * 60 + s;
 }
 
-// these functions are from a fork of JeeLab's fantastic real time clock library for Arduino
-// released into the public domain by Jeelabs https://github.com/jcw/rtclib & Ladyada & Eric Ayars, etc.
 // Also see Andy Wickert's splice of those libraries at: https://github.com/NorthernWidget/DS3231
-// ============================================================================================================
 // also see https://github.com/sleemanj/DS3231_Simple/blob/master/DS3231_Simple.cpp for an alternate library
 // also see https://github.com/mizraith/RTClib
 // or https://github.com/akafugu/ds_rtc_lib for more DS3231 specific libs
