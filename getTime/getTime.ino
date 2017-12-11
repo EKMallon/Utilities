@@ -34,7 +34,7 @@ void setup(void)
 {
   //pinMode(RTCPOWER_PIN, OUTPUT);   //some of my units use this pin for powering the RTC, need to set high for I2c coms.
   //digitalWrite(RTCPOWER_PIN, HIGH);
-  pinMode(GROUND_PIN, OUTPUT);   //some of my units use this pin for powering the RTC, need to set high for I2c coms.
+  pinMode(GROUND_PIN, OUTPUT);   //some of my units use this pin as the Ground for the indicator LED
   digitalWrite(GROUND_PIN, LOW);
   Wire.begin();
   Serial.begin(9600);
