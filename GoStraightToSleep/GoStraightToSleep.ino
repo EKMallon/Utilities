@@ -1,3 +1,7 @@
+//All this code is supposed to do is go to sleep so that I can check sleep current
+//These libraries are here, just to check how much memory they use, and to make sure
+//they don't somehow conflict with the rocket scream low power library.
+
 #include <Wire.h>       // I2C lib needs 128 byte Serial buffer
 #include <SPI.h>        // not used here, but needed to prevent a RTClib compile error....grrr!
 #include <RTClib.h>     // Date, Time and Alarm functions by https://github.com/MrAlvin/RTClib based largely on https://github.com/jcw
