@@ -1,4 +1,4 @@
-This is Julian Ilett's wonderful Nokia 5110 driver, explained in his tutorial videos at 
+This is Julian Ilett's Nokia 5110 driver, explained in his tutorial videos at 
 https://www.youtube.com/playlist?list=PLjzGSu1yGFjXWp5F4BPJg4ZJFbJcWeRzk
 
 I've added a small tweak to load the font array into to PROGMEM, 
@@ -10,3 +10,14 @@ to:
 LcdWriteData(pgm_read_byte(&ASCII[character - 0x20][i]));
 
 This means that no dynamic variable memory gets used to run the display.
+
+And I added some custom functions to print large numbers to the screen using a two pass method 
+wich prints the upper half of the numbers from one array, and the lower half of the double size numbers 
+from a second array after moving the cursor to the next line. It's a simple method that could be expanded
+to even larger sizes with a third array.
+
+And finally, I've left in commands for the RST & ChipEnable lines so this example code conforms to the standard
+six wire hookup guides you usually find on the web - but those two lines can be eliminated following 
+the instructions for pin-powering the display on our project website:
+
+https://thecavepearlproject.org/2018/05/18/adding-the-nokia-5110-lcd-to-your-arduino-data-logger/
