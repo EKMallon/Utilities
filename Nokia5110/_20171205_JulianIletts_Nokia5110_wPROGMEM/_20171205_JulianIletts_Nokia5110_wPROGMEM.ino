@@ -62,7 +62,7 @@ const byte Big11x16numberBottoms[][11] PROGMEM = {
   0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x7F,0x7F, // Code for char 9
 };
 
-//the regular sized font set:
+//the regular sized font set from https://hastebin.com/wizowutuji.vala
 const byte ASCII[][5] PROGMEM =
 {
  {0x00, 0x00, 0x00, 0x00, 0x00} // 20  
