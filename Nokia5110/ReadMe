@@ -9,7 +9,7 @@ LcdWriteData(ASCII[character - 0x20][i]);
 to:
 LcdWriteData(pgm_read_byte(&ASCII[character - 0x20][i]));
 
-This means that no dynamic variable memory gets used to run the display.
+This means that no dynamic variable memory gets used to store the font.
 
 And I added some custom functions to print large numbers to the screen using a two pass method 
 wich prints the upper half of the numbers from one array, and the lower half of the double size numbers 
