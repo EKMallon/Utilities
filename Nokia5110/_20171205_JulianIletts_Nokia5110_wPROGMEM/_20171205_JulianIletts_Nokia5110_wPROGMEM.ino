@@ -5,6 +5,9 @@
 //Also see: Sparkfuns Graphic LCD Hookup Guide for graphic bitmaps
 //https://learn.sparkfun.com/tutorials/graphic-lcd-hookup-guide?_ga=2.193476516.863067337.1512481661-1112697269.1408048121 
 
+// Note that I've left the RST & ChipEnable lines in this code to conform to the standard
+// 6 wire hookup guides you find on the web - ut those lines can be eliminated following the guide at:
+// https://thecavepearlproject.org/2018/05/18/adding-the-nokia-5110-lcd-to-your-arduino-data-logger/
 #define RST 5          //6.1.12 RES: LOW followed by HIGH = reset
 #define ChipEnable 6   //6.1.10 SCE: chip enable active LOW //could just connect this to ground if you have dedicated wires
 #define DCmodeSelect 7 //6.1.9 D/C: mode select // If D/C LOW, the current byte is interpreted as command byte  If D/C = HIGH, the following bytes are stored in the display data RAM. 
@@ -22,7 +25,7 @@ A4 is referred to as Pin 18
 A5 is referred to as Pin 19
  */
 
-//To make these fonts: LCD creator / LCD assistant http://www.instructables.com/id/Nokia-5110-graphics-tutorial/
+//To make these large number fonts: LCD creator / LCD assistant http://www.instructables.com/id/Nokia-5110-graphics-tutorial/
 /*
  * start with a bitmap that is 11 pixels wide, by 16 pixels high
  * for this 'split letters' method, use the vertical & little endian encoding in LCD assistant
@@ -241,6 +244,10 @@ void LcdInit(void)
 
 void setup()
 {
+// Note that I've left the RST & ChipEnable lines in this code to conform to the standard
+// 6 wire hookup guides you find on the web - ut those lines can be eliminated following the guide at:
+// https://thecavepearlproject.org/2018/05/18/adding-the-nokia-5110-lcd-to-your-arduino-data-logger/
+  
   pinMode(POWERpin, OUTPUT);
   digitalWrite(POWERpin, HIGH);
   pinMode(RST, OUTPUT);
