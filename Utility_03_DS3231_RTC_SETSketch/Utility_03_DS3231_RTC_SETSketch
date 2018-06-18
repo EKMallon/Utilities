@@ -1,0 +1,89 @@
+/* ReatTimeClock_reset - Last updated Apr2014
+ 
+ Use this sketch to reset the DS1307 & DS3231 Real Time Clocks. It will grab
+ the computer's current time during compilation and send that value
+ to the real time clock. 
+ 
+ DO NOT OPEN THE SERIAL MONITOR WHEN THIS SKETCH IS RUNNING!
+ SIMPLY watch for the three changing led colors to start flashing.
+ When you see the LED pips, immediately upload the getTime sketch to the Arduino
+ so that it doesn't try to constantly reset the clock when it 
+ the Arduino powers up. If resets before a new sketch is loaded, the Arduino will set 
+ the clock with the old code=compile time again, which will be out of date.
+*/
+
+// from https://github.com/jcw/rtclib/blob/master/RTClib.cpp
+
+#include <Wire.h>
+#include <SPI.h>    // Not used here but required for this RTClib to compile properly
+#include <RTClib.h> // from https://github.com/MrAlvin/RTClib
+
+#define DS3231_ADDRESS     0x68
+//#define DS3231_STATUS_REG  0x0F
+#define DS3231_CONTROL_REG 0x0E
+//#define DS3231_TMP_UP_REG  0x11
+
+#define RTCPOWER_PIN 4 
+#define RED_PIN 5
+#define GREEN_PIN 6 
+#define BLUE_PIN 7 
+#define GROUND_PIN 4 
+
+//#define RTCPOWER_PIN 14  //motinos
+//#define RED_PIN 20    //Led pins on MM
+//#define GREEN_PIN 21 
+//#define BLUE_PIN 22 
+
+RTC_DS1307 RTC;
+boolean resetFlag = false; // flag for clock reset
+
+void setup(void)
+{
+//  pinMode(GROUND_PIN, OUTPUT);   //some of my units use this pin for powering the RTC, need to set high for I2c coms.
+//  digitalWrite(GROUND_PIN, LOW);
+  pinMode(RTCPOWER_PIN, OUTPUT);   //some of my units use this pin for powering the RTC, need to set high for I2c coms.
+  digitalWrite(RTCPOWER_PIN, HIGH);
+  Wire.begin(); 
+  RTC.adjust(DateTime(__DATE__, __TIME__));
+  delay(5);
+
+/*
+ * Bit 6 (Battery-Backed Square-Wave Enable) of DS3231_CONTROL_REG 0x0E, can be set to 1 
+ * to force the wake-up alarms to occur when running the RTC from the back up battery alone. 
+ * [note: This bit is disabled (logic 0) when power is first applied]…”
+ */
+ 
+Wire.beginTransmission(DS3231_ADDRESS);    // get the sensors attention 
+Wire.write(DS3231_CONTROL_REG);    // move your memory pointer to registerAddress
+Wire.endTransmission();           // completes the ‘move memory pointer’ transaction
+
+Wire.requestFrom(DS3231_ADDRESS, 1); // send me the data from 2 registers
+byte resisterData = Wire.read();                    // byte from registerAddress
+
+bitSet(resisterData, 6);
+
+Wire.beginTransmission(DS3231_ADDRESS);  // Attention sensor @ deviceAddress!
+Wire.write(DS3231_CONTROL_REG);              // command byte to target the register location
+Wire.write(resisterData);                           // new data to put into that memory register
+Wire.endTransmission();
+
+}
+
+void loop(void)
+{
+
+  //the leds just tell me the time has been updated without opening the serial window
+  digitalWrite(RED_PIN,HIGH);
+  delay(500);
+  digitalWrite(RED_PIN,LOW);
+  delay(500);
+  digitalWrite(GREEN_PIN,HIGH);
+  delay(500);
+  digitalWrite(GREEN_PIN,LOW);
+  delay(500);
+  digitalWrite(BLUE_PIN,HIGH);
+  delay(500);
+  digitalWrite(BLUE_PIN,LOW);
+  delay(500);
+
+}
