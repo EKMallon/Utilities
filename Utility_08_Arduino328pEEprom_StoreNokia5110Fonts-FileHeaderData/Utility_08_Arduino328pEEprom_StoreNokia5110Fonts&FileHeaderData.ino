@@ -215,12 +215,19 @@ for(int i=0; i<13; i++){
 // =========================================================
 // Including the "big numbers font" means that locations 0-520 of the internal eeprom memory are filled with LCD font data
 // that leaves memory locations 521 to 1023 = 502 bytes of the internal eeprom storage free which is the PADLENGTH value
-// I use this space to store file header data & sensor calibration constants, and reminders on how to do certain calcuations
-//
+// I use this space to store file header data & sensor calibration constants, and reminders on how to do certain calculations
+// edit the text to suit your own project, alternating lines with the "\r\n" to provide line returns in the data file
 // \r is the ASCII character (carrier return (0xD), and \n is the ASCII character (line feed)(0xA) - \10 in decimal.
-// many programs on Windows require BOTH \r\n , in linux, you need only \r and in Mac, you need \n.
+// many programs on Windows require BOTH \r\n , in linux, you need only \r and in Mac, you only need \n.
+ 
+// WARNING: You have to have enough space in the first string to add the other strings or strcat will overflow
+// DO NOT put more characaters into the eepromString than the space you have left in the eeprom (incl. the carridge returns)
+// I don't have an error catch in this code for this so check your character count at sites like https://www.lettercount.com/
+// snprintf() is a safer alternative to to strcat in that it prevents writing beyond the end of the destination string.  
+// http://www.cplusplus.com/reference/cstdio/snprintf/  I just have not implemented that yet..
+ 
 strcpy(eepromString," ");
-strcat(eepromString, "\r\n"); //provides a carriage return in Excel
+strcat(eepromString, "\r\n"); //a carriage return in Excel
 strcat(eepromString,"#198, The Cave Pearl Project");
 strcat(eepromString, "\r\n");
 strcat(eepromString,"Etime=(raw*iSec)/(86400)+\"1/1/1970\""); // NOTE: '\'= and escape character which lets you put special characters into the string
@@ -239,11 +246,6 @@ strcat(eepromString, "\r\n");
 strcat(eepromString,"EEprom:ASCII(-toZcaps)0-234+Big#font235-519,HeaderData@521");
 strcat(eepromString, "\r\n");
 
-// WARNING: You have to have enough space in the first string to add the other strings or strcat will overflow
-// DO NOT put more characaters into the eepromString than the space you have left in the eeprom (incl. the carridge returns)
-// I don't have an error catch in this code for this so check your character count at sites like https://www.lettercount.com/
-// snprintf() is a safer alternative to to strcat in that it prevents writing beyond the end of the destination string.  
-// http://www.cplusplus.com/reference/cstdio/snprintf/  I just have not implemented that yet..
 
 // ===============================================================================================
 // Pad out eepromString with enough blank spaces to fill ALL of the remaining space in the EEprom
