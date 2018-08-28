@@ -182,9 +182,8 @@ currentIntEEpromAddress=0;
 for(int i=13; i<59; i++){
   for(int j=0; j<5; j++){
   currentIntEEpromAddress=(((i-13)*5)+j);
-  //LcdWriteData(pgm_read_byte(&ASCII[i][j]));
   charbuffer=pgm_read_byte(&ASCII[i][j]);
-  EEPROM.write(currentIntEEpromAddress,charbuffer);
+  EEPROM.update(currentIntEEpromAddress,charbuffer);
   }
 }
 
@@ -195,7 +194,7 @@ for(int i=0; i<13; i++){     // 13 characters in the array
   for(int j=0; j<11; j++){   // each font char is 11 bytes wide
   currentIntEEpromAddress=(235+(i*11)+j);  //note the 235 offset
   charbuffer=pgm_read_byte(&Big11x16numberTops[i][j]); 
-  EEPROM.write(currentIntEEpromAddress,charbuffer);
+  EEPROM.update(currentIntEEpromAddress,charbuffer);
   }
 }
 
@@ -206,7 +205,7 @@ for(int i=0; i<13; i++){
   for(int j=0; j<11; j++){
   currentIntEEpromAddress=(378+(i*11)+j); //note the 378 offset
   charbuffer=pgm_read_byte(&Big11x16numberBottoms[i][j]); 
-  EEPROM.write(currentIntEEpromAddress,charbuffer);
+  EEPROM.update(currentIntEEpromAddress,charbuffer);
   }
 }
 
@@ -262,7 +261,7 @@ currentIntEEpromAddress=521;
 for (int i = 0; i < PADLENGTH; i++){ 
     currentIntEEpromAddress=(521+i);
     if(currentIntEEpromAddress>1023){currentIntEEpromAddress=1023;}//error catch to make sure you don't write past last eeprom addr
-    EEPROM.write(currentIntEEpromAddress, eepromString[i]); 
+    EEPROM.update(currentIntEEpromAddress, eepromString[i]); 
     // An EEPROM write takes 3.3 ms to complete. The EEPROM has a specified life of 100,000 write/erase cycles
 }
 
