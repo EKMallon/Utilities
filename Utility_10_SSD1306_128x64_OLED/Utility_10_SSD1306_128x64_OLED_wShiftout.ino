@@ -7,10 +7,10 @@
 // I've included the 5x7 & big numbers font(s) at the end of this file for completeness
 
 // NOTE to use the EEprom.read code show here you need to have pre-loaded these fonts into the 328p's internal eeprom space:
-// That example loads a caps only version of the 5x7 font, and a NUMBERS ONLY version of the bigger split font
 // there is a page describing this method in detail at: https://thecavepearlproject.org/2018/08/24/tutorial-using-the-arduinos-internal-eeprom-for-fonts-header-data/
 // and an "EEprom loader" utility to use at https://github.com/EKMallon/Utilities/blob/master/Utility_08_Arduino328pEEprom_StoreNokia5110Fonts-FileHeaderData/Utility_08_Arduino328pEEprom_StoreNokia5110Fonts%26FileHeaderData.ino
-// If you run this program without any fonts stored in the eeprom you will see nothing on the screen
+// That example loads a caps only version of the 5x7 font, and a NUMBERS ONLY version of the bigger split font
+// If you run this program without the fonts stored in the eeprom you will see nothing on the screen
 
 #include <EEPROM.h>
 char tmp[14];
