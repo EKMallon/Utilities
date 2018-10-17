@@ -4,21 +4,21 @@
 // combined with config settings from
 // https://github.com/tardate/LittleArduinoProjects/blob/master/playground/OLED/SSD1306BareBack/SSD1306BareBack.ino
 // Following init sequence from the data sheet https://github.com/GravCorp/DayOLED_SSD1306/blob/master/DayOLED_SSD1306.cpp
-// I've included the 5x7 & big numbers font(s) at the end of this file for completeness
 
 // NOTE to use the EEprom.read code show here you need to have pre-loaded these fonts into the 328p's internal eeprom space:
 // there is a page describing this method in detail at: https://thecavepearlproject.org/2018/08/24/tutorial-using-the-arduinos-internal-eeprom-for-fonts-header-data/
 // and an "EEprom loader" utility to use at https://github.com/EKMallon/Utilities/blob/master/Utility_08_Arduino328pEEprom_StoreNokia5110Fonts-FileHeaderData/Utility_08_Arduino328pEEprom_StoreNokia5110Fonts%26FileHeaderData.ino
 // That example loads a caps only version of the 5x7 font, and a NUMBERS ONLY version of the bigger split font
 // If you run this program without the fonts stored in the eeprom you will see nothing on the screen
+// I've included the 5x7 & big numbers font(s) at the end of this file for completeness
 
 #include <EEPROM.h>
 char tmp[14];
 unsigned long thisMicros = 0;
 unsigned long lastMicros = 0;
 
-//this code assumes the following OLED connections
-//=================================================
+//this code assumes the following OLED connections to a 3.3v Arduino Pro Mini
+//============================================================================
 // ARDUINO port -> connected to -> OLED screen terminal
 // GND-->GND
 // GND-->CS
@@ -28,11 +28,11 @@ unsigned long lastMicros = 0;
 // A2--> D1 (white)
 // A0--> 10k resistor--> RES <--104 ceramic cap <--GND  [this provides a delayed high singal to the reset pin]
 
-//=============WARNING====================
+//=============WARNING============================================================================================================
 // powering the screen this way usualy draws between 3-15mA for several lines of text
 // be careful not to light up all the pixels at once(by using reverse fonts), as some screens may then
-// exceed the max Arduino pin current of 25mA!
-//=============WARNING====================
+// exceed the max Arduino's pin current of 25mA! Also do not use these connections with a 5v Arduino or you will fry the 3.3v screen.
+//=============WARNING============================================================================================================
 
 #define PowerPin  A0    //A0 provides power to the screen
 #define PIN_DC    A1    //blue
