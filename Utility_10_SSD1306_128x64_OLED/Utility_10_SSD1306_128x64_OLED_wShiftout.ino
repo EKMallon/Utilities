@@ -288,10 +288,10 @@ void loop()
   delay(1);
   PORTC = PORTC & 0b11110000; //Set pins A0-A3 low smultaneously & leaves others untouched.
   //which is equivalent to:
-  //digitalWrite(PowerPin, LOW); //if pin powering - bringing all lines low goes to 0uA
-  //digitalWrite(PIN_DC, LOW); //digitalWrite(n5110modeSelect, LOW);
-  //digitalWrite(PIN_SDIN, LOW); //digitalWrite(n5110SData, LOW);
-  //digitalWrite(PIN_SCLK, LOW);  //digitalWrite(n5110SCLK, LOW); 
+  //digitalWrite(PowerPin, LOW); //if pin powering - bringing all lines low
+  //digitalWrite(PIN_DC, LOW); 
+  //digitalWrite(PIN_SDIN, LOW); 
+  //digitalWrite(PIN_SCLK, LOW); 
   
   delay(2000);
 }
