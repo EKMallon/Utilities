@@ -286,11 +286,12 @@ void loop()
   //to turn off the display:
   oledWriteCmd(SSD1306_DISPLAY_SLEEP); //= 0b10101110 =0xAE  brings current down to 10uA
   delay(1);
-  //note this could be done faster with port commands, & would probably be better for the controller...
-  digitalWrite(PowerPin, LOW); //if pin powering - bringing all lines low goes to 0uA
-  digitalWrite(PIN_DC, LOW); //digitalWrite(n5110modeSelect, LOW);
-  digitalWrite(PIN_SDIN, LOW); //digitalWrite(n5110SData, LOW);
-  digitalWrite(PIN_SCLK, LOW);  //digitalWrite(n5110SCLK, LOW); 
+  PORTC = PORTC & 0b11110000; //Set pins A0-A3 low smultaneously & leaves others untouched.
+  //which is equivalent to:
+  //digitalWrite(PowerPin, LOW); //if pin powering - bringing all lines low goes to 0uA
+  //digitalWrite(PIN_DC, LOW); //digitalWrite(n5110modeSelect, LOW);
+  //digitalWrite(PIN_SDIN, LOW); //digitalWrite(n5110SData, LOW);
+  //digitalWrite(PIN_SCLK, LOW);  //digitalWrite(n5110SCLK, LOW); 
   
   delay(2000);
 }
