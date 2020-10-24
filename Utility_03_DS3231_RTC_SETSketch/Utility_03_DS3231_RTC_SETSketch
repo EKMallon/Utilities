@@ -23,10 +23,10 @@
 #define DS3231_CONTROL_REG 0x0E
 //#define DS3231_TMP_UP_REG  0x11
 
-#define RTCPOWER_PIN 4 
-#define RED_PIN 5
-#define GREEN_PIN 6 
-#define BLUE_PIN 7 
+//#define RTCPOWER_PIN 4  //enable only if you are pin-powering the RTC
+#define RED_PIN 3
+#define GREEN_PIN 5 
+#define BLUE_PIN 6 
 #define GROUND_PIN 4 
 
 //#define RTCPOWER_PIN 14  //motinos
@@ -39,10 +39,10 @@ boolean resetFlag = false; // flag for clock reset
 
 void setup(void)
 {
-//  pinMode(GROUND_PIN, OUTPUT);   //some of my units use this pin for powering the RTC, need to set high for I2c coms.
-//  digitalWrite(GROUND_PIN, LOW);
-  pinMode(RTCPOWER_PIN, OUTPUT);   //some of my units use this pin for powering the RTC, need to set high for I2c coms.
-  digitalWrite(RTCPOWER_PIN, HIGH);
+pinMode(GROUND_PIN, OUTPUT);   //some of my units use this pin for powering the RTC, need to set high for I2c coms.
+digitalWrite(GROUND_PIN, LOW);
+  //pinMode(RTCPOWER_PIN, OUTPUT);   //some of my units use this pin for powering the RTC, need to set high for I2c coms.
+  //digitalWrite(RTCPOWER_PIN, HIGH);
   Wire.begin(); 
   RTC.adjust(DateTime(__DATE__, __TIME__));
   delay(5);
@@ -73,17 +73,17 @@ void loop(void)
 {
 
   //the leds just tell me the time has been updated without opening the serial window
-  digitalWrite(RED_PIN,HIGH);
+  pinmode(RED_PIN,INPUT_PULLUP);
   delay(500);
-  digitalWrite(RED_PIN,LOW);
+  pinmode(RED_PIN,INPUT);
   delay(500);
-  digitalWrite(GREEN_PIN,HIGH);
+  pinmode(GREEN_PIN,INPUT_PULLUP);
   delay(500);
-  digitalWrite(GREEN_PIN,LOW);
+  pinmode(GREEN_PIN,INPUT);
   delay(500);
-  digitalWrite(BLUE_PIN,HIGH);
+  pinmode(BLUE_PIN,INPUT_PULLUP);
   delay(500);
-  digitalWrite(BLUE_PIN,LOW);
+  pinmode(BLUE_PIN,INPUT);
   delay(500);
 
 }
