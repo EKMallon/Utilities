@@ -1,11 +1,10 @@
 // For reading the time from DS3231 RTC
 
 #include <Wire.h>
-#define RTCPOWER_PIN 4  // Assumes you are powering your DS3231 RTC from this pin. Even if you are not, it is harmless to leave this in unless you have something else connected to digital pin 7. 
-#define RED_PIN 5
-#define GREEN_PIN 6 
-#define BLUE_PIN 7 
-//#define GROUND_PIN 4 some of the loggers need this poin grounded for the led...
+#define RED_PIN 3 
+#define GREEN_PIN 5 //change these pin definitions to match where your indicator LED is connected
+#define BLUE_PIN 6 
+#define GROUND_PIN 4 some of the loggers need this poin grounded for the led...
 
 //DS3231 RTC variables
 //====================
@@ -39,8 +38,11 @@ static uint8_t bin2bcd (uint8_t val) {
 
 void setup(void)
 {
-  pinMode(RTCPOWER_PIN, OUTPUT);   //some of my units use this pin for powering the RTC, need to set high for I2c coms.
-  digitalWrite(RTCPOWER_PIN, HIGH);
+ // pinMode(RTCPOWER_PIN, OUTPUT);   //some of my units use this pin for powering the RTC, need to set high for I2c coms.
+ // digitalWrite(RTCPOWER_PIN, HIGH);
+  pinMode(GROUND_PIN, OUTPUT);   //some of my units use this pin for powering the RTC, need to set high for I2c coms.
+  digitalWrite(GROUND_PIN, LOW);
+
   Wire.begin();
   //TWBR=2;
   Serial.begin(9600);
@@ -76,9 +78,9 @@ TEMP_degC = RTC_DS3231_getTemp();  //RTC temp register always gets read as a bac
   Serial.print(" Temperature from RTC temp register= ");
   Serial.println (TEMP_degC);
   
-  digitalWrite(GREEN_PIN,HIGH);
+  pinmode(GREEN_PIN,INPUT_PULLUP); //Indicator LED now lights with internal pullup resistor in series
   delay(500);
-  digitalWrite(GREEN_PIN,LOW);
+  pinmode(GREEN_PIN,INPUT);
   delay(500);
 }
 
