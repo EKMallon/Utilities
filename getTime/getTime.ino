@@ -1,9 +1,9 @@
 // for reading the time from DS3231 RTC
 
 #include <Wire.h>
-#define RED_PIN 5
-#define GREEN_PIN 6 
-#define BLUE_PIN 7 
+#define RED_PIN 3
+#define GREEN_PIN 5 
+#define BLUE_PIN 6 
 #define GROUND_PIN 4 
 
 //DS3231 RTC variables
@@ -62,9 +62,9 @@ void loop(void)
   Serial.print("s = ");
   Serial.print(eTime / 86400L);
   Serial.println("days"); 
-  digitalWrite(GREEN_PIN,HIGH);
+  digitalWrite(GREEN_PIN,INPUT_PULLUP); //lights indicator through internal pullup resistor
   delay(500);
-  digitalWrite(GREEN_PIN,LOW);
+  digitalWrite(GREEN_PIN,INPUT);
   delay(500);
 }
 
