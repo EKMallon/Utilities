@@ -19,7 +19,7 @@ RTC_DS1307 RTC;     // Setup an instance of DS1307 naming it RTC
 #define DS3231_CONTROL_REG 0x0E
 
 void setup () {
-    pinMode(13, OUTPUT);
+    pinMode(LED_BUILTIN, OUTPUT);
     Wire.begin(); // Start the I2C
     RTC.begin();  // Init RTC
     RTC.adjust(DateTime(__DATE__, __TIME__));  // Time and date are set to date and time on your computer at compiletime
@@ -28,9 +28,9 @@ void setup () {
 }
 
 void loop () {   //flashing led tells you the time has been set
-  digitalWrite(13, HIGH);   // turn the LED on 
+  digitalWrite(LED_BUILTIN, HIGH);   // turn the LED on 
   delay(250);              // wait for a 1/4second
-  digitalWrite(13, LOW);    // turn the LED off 
+  digitalWrite(LED_BUILTIN, LOW);    // turn the LED off 
   delay(250);              // wait for a 1/4second
 }
 
