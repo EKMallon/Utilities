@@ -59,15 +59,15 @@ void clearClockTrigger()          // from http://forum.arduino.cc/index.php?topi
  * [note: This bit is usually disabled (logic 0) when power is FIRST applied]
  */
   void enableRTCAlarmsonBackupBattery(){
-  Wire.beginTransmission(DS3231_I2C_ADDRESS);              // Attention device at RTC address 0x68
-  Wire.write(DS3231_CONTROL_REG);            // move the memory pointer to CONTROL_REGister
-  Wire.endTransmission();                    // complete the ‘move memory pointer’ transaction
-  Wire.requestFrom(DS3231_I2C_ADDRESS,1);                  // request data from register
-  byte resisterData = Wire.read();           // byte from registerAddress
-  bitSet(resisterData, 6);                   // Change bit 6 to a 1 to enable
-  Wire.beginTransmission(DS3231_I2C_ADDRESS);              // Attention device at RTC address 0x68
-  Wire.write(DS3231_CONTROL_REG);            // target the CONTROL_REGister
-  Wire.write(resisterData);                  // put changed byte back into CONTROL_REG
+  Wire.beginTransmission(DS3231_I2C_ADDRESS);      // Attention device at RTC address 0x68
+  Wire.write(DS3231_CONTROL_REG);                  // move the memory pointer to CONTROL_REGister
+  Wire.endTransmission();                          // complete the ‘move memory pointer’ transaction
+  Wire.requestFrom(DS3231_I2C_ADDRESS,1);          // request data from register
+  byte resisterData = Wire.read();                 // byte from registerAddress
+  bitSet(resisterData, 6);                         // Change bit 6 to a 1 to enable
+  Wire.beginTransmission(DS3231_I2C_ADDRESS);      // Attention device at RTC address 0x68
+  Wire.write(DS3231_CONTROL_REG);                  // target the CONTROL_REGister
+  Wire.write(resisterData);                        // put changed byte back into CONTROL_REG
   Wire.endTransmission();
   }
 
