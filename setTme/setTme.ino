@@ -22,8 +22,11 @@ void setup () {
     pinMode(LED_BUILTIN, OUTPUT);
     Wire.begin(); // Start the I2C
     RTC.begin();  // Init RTC
+ 
     RTC.adjust(DateTime(__DATE__, __TIME__));  // Time and date are set to date and time on your computer at compiletime
-
+ 
+    clearClockTrigger();
+ 
     enableRTCAlarmsonBackupBattery(); // only needed if you cut the Vcc pin supplying power to the DS3231 chip to run clock from coincell
 }
 
@@ -32,6 +35,21 @@ void loop () {   //flashing led tells you the time has been set
   delay(250);              // wait for a 1/4second
   digitalWrite(LED_BUILTIN, LOW);    // turn the LED off 
   delay(250);              // wait for a 1/4second
+}
+
+//====================================================================================
+// clearClockTrigger function needed to acheive low sleep currents with DS3231 Vcc Pin cut
+void clearClockTrigger()          // from http://forum.arduino.cc/index.php?topic=109062.0
+{
+  Wire.beginTransmission(0x68);   //Tell devices on the bus we are talking to the DS3231
+  Wire.write(0x0F);               //Tell the device which address we want to read or write
+  Wire.endTransmission();         //Before you can write to and clear the alarm flag
+  Wire.requestFrom(0x68,1);       //you have to read the flag first! Read one byte
+  Wire.read();                    //Read one byte - we are not interest in actually using it
+  Wire.beginTransmission(0x68);   //Tell devices on the bus we are talking to the DS3231 
+  Wire.write(0x0F);               //Status Register: Bit 3: zero disables 32kHz, Bit 7: zero enables the main oscilator
+  Wire.write(0b00000000);         //Bit1: zero clears Alarm 2 Flag (A2F), Bit 0: zero clears Alarm 1 Flag (A1F)
+  Wire.endTransmission();
 }
 
 //====================================================================================
@@ -52,3 +70,4 @@ void loop () {   //flashing led tells you the time has been set
   Wire.write(resisterData);                  // put changed byte back into CONTROL_REG
   Wire.endTransmission();
   }
+
